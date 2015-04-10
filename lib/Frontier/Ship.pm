@@ -199,7 +199,7 @@ sub __scan__meta {
     return {
         desc => 'Performs a scan, giving details about nearby objects.',
         cacheable => {
-            cached => 1, # number of seconds to cache this result per ship
+            cached => 0.5, # number of seconds to cache this result per ship
             key => ['ship_id'], # args to use as a cache key
         },
         ship_status => {

@@ -73,9 +73,17 @@ function drawBoard() {
 function updateObj(obj) {
   if (obj.shield === null) { return }
   obj2 = json.obj_is[obj.object_id];
-  for (var thing in {x:1,y:1,move_radians:1,object_radians:1} ) {
-    diff = (obj[thing] - obj2[thing]) * drawTimeMod;
-    obj2[thing] = obj2[thing] + diff;
+  for (var thing in {x:1,y:1} ) {
+    diff = obj[thing] - obj2[thing];
+    obj2[thing] = obj2[thing] + diff * drawTimeMod;
+  }
+  for (var thing in {move_radians:1,object_radians:1} ) {
+    diff = obj[thing] - obj2[thing];
+    if (diff > Math.PI) { diff = diff - 2*Math.PI }
+    if (diff < -Math.PI) { diff = diff + 2* Math.PI }
+    obj2[thing] = obj2[thing] + diff * drawTimeMod;
+    if (obj2[thing] < 0) { obj2[thing] = obj2[thing] + Math.PI*2; }
+    if (obj2[thing] > Math.PI*2) { obj2[thing] = obj2[thing] - Math.PI*2; }
   }
 }
 
