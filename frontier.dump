@@ -78,8 +78,8 @@ ALTER TABLE public.object_id OWNER TO frontier;
 CREATE TABLE objects (
     object_id integer DEFAULT nextval('object_id'::regclass) NOT NULL,
     board_id integer NOT NULL,
-    x real DEFAULT (round((random() * (100000)::double precision)) - (50000)::double precision) NOT NULL,
-    y real DEFAULT (round((random() * (100000)::double precision)) - (50000)::double precision) NOT NULL,
+    x real DEFAULT (round((random() * (10000)::double precision)) - (5000)::double precision) NOT NULL,
+    y real DEFAULT (round((random() * (10000)::double precision)) - (5000)::double precision) NOT NULL,
     hull integer NOT NULL,
     object_radians real DEFAULT ((random() * (2)::double precision) * pi()) NOT NULL,
     move_radians real DEFAULT ((random() * (2)::double precision) * pi()) NOT NULL,
@@ -101,8 +101,17 @@ CREATE TABLE ships (
     ship_name character varying(100) NOT NULL,
     ship_pass character(64) NOT NULL,
     ship_engine_power real NOT NULL,
-    energy integer DEFAULT 0 NOT NULL,
-    shield integer DEFAULT 0 NOT NULL
+    energy real DEFAULT 100 NOT NULL,
+    energy_max integer DEFAULT 100 NOT NULL,
+    energy_regen integer DEFAULT 5 NOT NULL,
+    shield integer DEFAULT 100 NOT NULL,
+    shield_cost integer DEFAULT 1 NOT NULL,
+    shield_regen integer DEFAULT 1 NOT NULL,
+    shield_regen_enabled boolean DEFAULT false NOT NULL,
+    hull integer DEFAULT 100 NOT NULL,
+    hull_cost integer DEFAULT 75 NOT NULL,
+    hull_regen integer DEFAULT 1 NOT NULL,
+    hull_regen_enabled boolean DEFAULT false NOT NULL
 );
 
 
@@ -120,7 +129,7 @@ SELECT pg_catalog.setval('board_id', 2, true);
 --
 
 COPY boards (board_id, board_name, board_pass, max_players, last_used) FROM stdin;
-2	testing	9e885e403f88e66c84d6ac852ce1bb5b701357aa0c3aaa0d07f0c22fbe9cf4ec	10	1428551242
+2	testing	9e885e403f88e66c84d6ac852ce1bb5b701357aa0c3aaa0d07f0c22fbe9cf4ec	10	1428641433
 \.
 
 
@@ -128,7 +137,7 @@ COPY boards (board_id, board_name, board_pass, max_players, last_used) FROM stdi
 -- Name: object_id; Type: SEQUENCE SET; Schema: public; Owner: frontier
 --
 
-SELECT pg_catalog.setval('object_id', 5, true);
+SELECT pg_catalog.setval('object_id', 112, true);
 
 
 --
@@ -136,10 +145,10 @@ SELECT pg_catalog.setval('object_id', 5, true);
 --
 
 COPY objects (object_id, board_id, x, y, hull, object_radians, move_radians, move_speed, image, image_scale) FROM stdin;
-1	2	0	0	100	2.69953752	2.69953752	0	redship.png	1
-2	2	638.450256	-1828.88086	100	2.69953752	2.69953752	0	ship.png	1
-3	2	-180.774872	85.5595932	100	2.69953752	2.69953752	0	greyship.png	1
-4	2	-5423.24609	2566.78784	100	2.69953752	2.69953752	0	redship.png	1
+2	2	743.115784	-1693.38867	100	2.26817489	2.26817489	0	ship.png	1
+3	2	-128.442093	153.305664	100	2.26817489	2.26817489	0	greyship.png	1
+4	2	-3853.2627	4599.16992	100	2.26817489	2.26817489	0	redship.png	1
+1	2	0	0	100	2.26817441	2.26817441	0	redship.png	1
 \.
 
 
@@ -147,11 +156,11 @@ COPY objects (object_id, board_id, x, y, hull, object_radians, move_radians, mov
 -- Data for Name: ships; Type: TABLE DATA; Schema: public; Owner: frontier
 --
 
-COPY ships (object_id, board_id, ship_name, ship_pass, ship_engine_power, energy, shield) FROM stdin;
-1	2	Frontier::ShipAI::Orbiter_CPNNOYAPAY	47d5a7473033a836158179392a635a6f3155adf4ae739e0f463f741c37555f6c	0	100	100
-2	2	Frontier::ShipAI::Orbiter_YEBIIXPHYS	38e4fcf4b3b1bd67ad7b5e4fa928cf272663572e2df6fa0c9758707e78ac4c74	0	100	100
-3	2	Frontier::ShipAI::Orbiter_CYORBFHBWJ	34856c9793c29de2f6743045aa4c48d5d1eac6f13bca041786cc954ff93d8f39	0	100	100
-4	2	Frontier::ShipAI::Orbiter_JRPGKTRRME	69cb913dcdbd4d2ecf9457334eea93132d1594eba2016b5138dad79cd71977ab	0	100	100
+COPY ships (object_id, board_id, ship_name, ship_pass, ship_engine_power, energy, energy_max, energy_regen, shield, shield_cost, shield_regen, shield_regen_enabled, hull, hull_cost, hull_regen, hull_regen_enabled) FROM stdin;
+2	2	Frontier::ShipAI::Orbiter_YEBIIXPHYS	38e4fcf4b3b1bd67ad7b5e4fa928cf272663572e2df6fa0c9758707e78ac4c74	0	100	100	5	100	1	1	f	100	75	1	f
+3	2	Frontier::ShipAI::Orbiter_CYORBFHBWJ	34856c9793c29de2f6743045aa4c48d5d1eac6f13bca041786cc954ff93d8f39	0	100	100	5	100	1	1	f	100	75	1	f
+4	2	Frontier::ShipAI::Orbiter_JRPGKTRRME	69cb913dcdbd4d2ecf9457334eea93132d1594eba2016b5138dad79cd71977ab	0	100	100	5	100	1	1	f	100	75	1	f
+1	2	Frontier::ShipAI::Orbiter_CPNNOYAPAY	47d5a7473033a836158179392a635a6f3155adf4ae739e0f463f741c37555f6c	0	100	100	5	100	1	1	f	100	75	1	f
 \.
 
 
