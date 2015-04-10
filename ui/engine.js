@@ -161,15 +161,23 @@ function move(myjson) {
 
   for (var id in json.obj) {
     obj = json.obj[id];
-    if (!json.obj_is[id]) {
+    if (typeof json.obj_is[id] == 'undefined') {
       json.obj_is[id] = {};
       for (var key in obj) {
         json.obj_is[id][key] = obj[key];
       }
-      if (obj.origin_id) {
-        json.obj_is[id]['x'] = json.obj_is[obj.origin_id]['x'];
-        json.obj_is[id]['y'] = json.obj_is[obj.origin_id]['y'];
+    } else if (json.obj_is[id].x === null && json.obj[id].x !== null) {
+      for (var key in obj) {
+        json.obj_is[id][key] = obj[key];
       }
+    } else if (json.obj_is[id].x !== null && json.obj[id].x === null) {
+      for (var key in obj) {
+        json.obj_is[id][key] = null;
+      }
+    }
+    if (obj.origin_id) {
+      json.obj_is[id]['x'] = json.obj_is[obj.origin_id]['x'];
+      json.obj_is[id]['y'] = json.obj_is[obj.origin_id]['y'];
     }
     json.obj_is[id].image = json.obj[id].image; // make sure we get image updates
   }
