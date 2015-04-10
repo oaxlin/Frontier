@@ -115,7 +115,7 @@ sub ship {
         my $dx = cos($ship->{'move_radians'})*$ship->{'move_speed'} + cos($ship->{'object_radians'})*$ship->{'ship_engine_power'};
         my $dy = sin($ship->{'move_radians'})*$ship->{'move_speed'} + sin($ship->{'object_radians'})*$ship->{'ship_engine_power'};
         my $speed = (($dx**2)+($dy**2))**0.5;
-        $speed = 15 if $speed > 15;
+        $speed = 25 if $speed > 25;
         my $rad = Frontier::Common::radians({x=>0,y=>0},{x=>$dx,y=>$dy});
         $dbh->do('UPDATE objects SET move_speed = ?, move_radians = ? WHERE object_id = ?',{},$speed,$rad, $ship->{'object_id'});
         $dbh->do('UPDATE ships SET energy = energy - ? WHERE object_id = ?',{}, $ship->{'ship_engine_power'}/10.0, $ship->{'object_id'});

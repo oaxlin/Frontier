@@ -49,7 +49,7 @@ sub __new {
     local $self->dbh->{AutoCommit} = 0;
     {
         #local $self->dbh->{'PrintError'} = 0;
-        $self->dbh->do('INSERT INTO objects (board_id,hull,image,x,y) VALUES (?,?,?,200,200)',{},
+        $self->dbh->do('INSERT INTO objects (board_id,hull,image) VALUES (?,?,?)',{},
             $board->{'board_id'},$hull,$args->{'ship_image'})
             or throw 'Could not create ship';
     }
